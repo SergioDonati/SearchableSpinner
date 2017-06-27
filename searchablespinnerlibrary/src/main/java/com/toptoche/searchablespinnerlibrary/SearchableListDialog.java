@@ -42,6 +42,8 @@ public class SearchableListDialog extends DialogFragment implements
 
     private DialogInterface.OnClickListener _onClickListener;
 
+	private String _strHintText;
+
     public SearchableListDialog() {
 
     }
@@ -136,6 +138,10 @@ public class SearchableListDialog extends DialogFragment implements
         this._onSearchTextChanged = onSearchTextChanged;
     }
 
+	public void setQueryHint(String strHint){
+		this._strHintText = strHint;
+	}
+
     private void setData(View rootView) {
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context
                 .SEARCH_SERVICE);
@@ -147,6 +153,9 @@ public class SearchableListDialog extends DialogFragment implements
         _searchView.setOnQueryTextListener(this);
         _searchView.setOnCloseListener(this);
         _searchView.clearFocus();
+		if(_strHintText != null){
+			_searchView.setQueryHint(_strHintText);
+		}
         InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context
                 .INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(_searchView.getWindowToken(), 0);
