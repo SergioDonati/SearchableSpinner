@@ -74,6 +74,9 @@ public class SearchableSpinner extends Spinner implements View.OnTouchListener,
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+		if (_searchableListDialog.isAdded()) {
+ 			return true;
+		}
         if (event.getAction() == MotionEvent.ACTION_UP) {
 
             if (null != _arrayAdapter) {
@@ -126,6 +129,10 @@ public class SearchableSpinner extends Spinner implements View.OnTouchListener,
 
     public void setTitle(String strTitle) {
         _searchableListDialog.setTitle(strTitle);
+    }
+
+	public void setHint(String strHint) {
+		_strHintText = strHint;
     }
 
     public void setPositiveButton(String strPositiveButtonText) {
