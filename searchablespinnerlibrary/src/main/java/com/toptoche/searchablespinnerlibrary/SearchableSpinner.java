@@ -133,6 +133,7 @@ public class SearchableSpinner extends Spinner implements View.OnTouchListener,
 
 	public void setHint(String strHint) {
 		_strHintText = strHint;
+		if(_searchableListDialog != null) _searchableListDialog.setQueryHint(setHint);
     }
 
     public void setPositiveButton(String strPositiveButtonText) {
