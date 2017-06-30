@@ -58,8 +58,7 @@ public class SearchableSpinner extends Spinner implements View.OnTouchListener,
 
     private void init() {
         _items = new ArrayList();
-        _searchableListDialog = SearchableListDialog.newInstance
-                (_items);
+        _searchableListDialog = SearchableListDialog.newInstance(_items);
         _searchableListDialog.setOnSearchableItemClickListener(this);
         setOnTouchListener(this);
 
@@ -99,7 +98,6 @@ public class SearchableSpinner extends Spinner implements View.OnTouchListener,
 
     @Override
     public void setAdapter(SpinnerAdapter adapter) {
-
         if (!_isFromInit) {
             _arrayAdapter = (ArrayAdapter) adapter;
             if (!TextUtils.isEmpty(_strHintText) && !_isDirty) {
@@ -118,14 +116,22 @@ public class SearchableSpinner extends Spinner implements View.OnTouchListener,
 
     @Override
     public void onSearchableItemClicked(Object item, int position) {
-        setSelection(_items.indexOf(item));
-
-        if (!_isDirty) {
+        if (!_isDirty && _arrayAdapter != null) {
             _isDirty = true;
             setAdapter(_arrayAdapter);
-            setSelection(_items.indexOf(item));
         }
+		int index = _items.indexOf(item);
+		if(index >= 0) setSelection(index);
     }
+
+	@Override
+	public void setSelection(int position){
+		if (!_isDirty && _arrayAdapter != null) {
+            _isDirty = true;
+            setAdapter(_arrayAdapter);
+        }
+		super.setSelection(position);
+	}
 
     public void setTitle(String strTitle) {
         _searchableListDialog.setTitle(strTitle);
