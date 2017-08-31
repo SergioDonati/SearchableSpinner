@@ -187,6 +187,12 @@ public class SearchableListDialog extends DialogFragment implements
         return false;
     }
 
+	@Override
+	public void onPause(){
+		super.onPause();
+		getDialog().dismiss();
+	}
+
     @Override
     public boolean onQueryTextSubmit(String s) {
         _searchView.clearFocus();
