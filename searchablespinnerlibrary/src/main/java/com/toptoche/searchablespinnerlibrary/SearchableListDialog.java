@@ -215,7 +215,7 @@ public class SearchableListDialog extends DialogFragment implements
 					if(_filter.check(item, s)){
 						filtered.add(item);
 					}
-	            }
+				}
 				adapter.addAll(filtered);
 			}else{
 				adapter.getFilter().filter(s)
