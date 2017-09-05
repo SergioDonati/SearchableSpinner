@@ -185,7 +185,8 @@ public class SearchableSpinner extends Spinner implements View.OnTouchListener,
     }
 
 	public void setFilter(IFilter filter){
-		_filter = filter;
+        _filter = filter;
+        _searchableListDialog.setFilter(_filter);
 	}
 
 	public interface IFilter{
