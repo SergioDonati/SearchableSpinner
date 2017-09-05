@@ -28,6 +28,7 @@ public class SearchableSpinner extends Spinner implements View.OnTouchListener,
     private ArrayAdapter _arrayAdapter;
     private String _strHintText;
     private boolean _isFromInit;
+	private IFilter _filter;
 
     public SearchableSpinner(Context context) {
         super(context);
@@ -182,4 +183,12 @@ public class SearchableSpinner extends Spinner implements View.OnTouchListener,
             return super.getSelectedItem();
         }
     }
+
+	public void setFilter(IFilter filter){
+		_filter = filter;
+	}
+
+	public interface IFilter{
+		boolean check(Object item, String text);
+	}
 }
