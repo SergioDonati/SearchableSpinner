@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchableListDialog extends DialogFragment implements
@@ -203,23 +204,28 @@ public class SearchableListDialog extends DialogFragment implements
     public boolean onQueryTextChange(String s) {
 //        listAdapter.filterData(s);
 		List items = (List) getArguments().getSerializable(ITEMS);
-		ArrayAdapter adapter = (ArrayAdapter) _listViewItems.getAdapter();
-        if (TextUtils.isEmpty(s)) {
-//                _listViewItems.clearTextFilter();
-			adapter.addAll(items);
-        } else {
-			if(_filter != null){
-				List items = (List) getArguments().getSerializable(ITEMS);
-				List filtered = new ArrayList();
-				for (Object item: a) {
-					if(_filter.check(item, s)){
-						filtered.add(item);
-					}
-				}
-				adapter.addAll(filtered);
-			}else{
-				adapter.getFilter().filter(s)
-			}
+        if (items != null){
+            ArrayAdapter adapter = (ArrayAdapter) _listViewItems.getAdapter();
+            if (TextUtils.isEmpty(s)) {
+    //                _listViewItems.clearTextFilter();
+                adapter.clear();
+                adapter.addAll(items);
+            } else {
+                if(_filter != null){
+                    List filtered = new ArrayList();
+                    for (Object item: items) {
+                        if(_filter.check(item, s)){
+                            filtered.add(item);
+                        }
+                    }
+                    adapter.clear();
+                    adapter.addAll(filtered);
+                }else{
+                    adapter.clear();
+                    adapter.addAll(items);
+                    adapter.getFilter().filter(s);
+                }
+            }
         }
         if (null != _onSearchTextChanged) {
             _onSearchTextChanged.onSearchTextChanged(s);
@@ -235,7 +241,7 @@ public class SearchableListDialog extends DialogFragment implements
         void onSearchTextChanged(String strText);
     }
 
-	public void setFilter(IFilter filter){
+	public void setFilter(SearchableSpinner.IFilter filter){
 		_filter = filter;
 	}
 }
