@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +23,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("WeakerAccess")
 public class SearchableListDialog extends DialogFragment implements
         SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
+    private static final String TAG = "SearchableListDialog";
     private static final String ITEMS = "items";
 
     private ArrayAdapter listAdapter;
@@ -69,10 +72,8 @@ public class SearchableListDialog extends DialogFragment implements
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams
-                .SOFT_INPUT_STATE_HIDDEN);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if(getDialog().getWindow()!=null)getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -104,8 +105,7 @@ public class SearchableListDialog extends DialogFragment implements
         alertDialog.setTitle(strTitle);
 
         final AlertDialog dialog = alertDialog.create();
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams
-                .SOFT_INPUT_STATE_HIDDEN);
+        if(dialog.getWindow()!=null)dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         return dialog;
     }
 
@@ -145,8 +145,7 @@ public class SearchableListDialog extends DialogFragment implements
 	}
 
     private void setData(View rootView) {
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context
-                .SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
 
         _searchView = (SearchView) rootView.findViewById(R.id.search);
         _searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
@@ -157,8 +156,7 @@ public class SearchableListDialog extends DialogFragment implements
 		if(_strHintText != null){
 			_searchView.setQueryHint(_strHintText);
 		}
-        InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context
-                .INPUT_METHOD_SERVICE);
+        InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(_searchView.getWindowToken(), 0);
 
         List items = (List) getArguments().getSerializable(ITEMS);
@@ -191,7 +189,7 @@ public class SearchableListDialog extends DialogFragment implements
 		super.onPause();
 		try{
 			getDialog().dismiss();
-		}catch(Exception e){}
+		}catch(Exception ignored){}
 	}
 
     @Override
@@ -210,6 +208,7 @@ public class SearchableListDialog extends DialogFragment implements
     //                _listViewItems.clearTextFilter();
                 adapter.clear();
                 adapter.addAll(items);
+                adapter.notifyDataSetChanged();
             } else {
                 if(_filter != null){
                     List filtered = new ArrayList();
@@ -220,9 +219,11 @@ public class SearchableListDialog extends DialogFragment implements
                     }
                     adapter.clear();
                     adapter.addAll(filtered);
+                    adapter.notifyDataSetChanged();
                 }else{
                     adapter.clear();
                     adapter.addAll(items);
+                    adapter.notifyDataSetChanged();
                     adapter.getFilter().filter(s);
                 }
             }

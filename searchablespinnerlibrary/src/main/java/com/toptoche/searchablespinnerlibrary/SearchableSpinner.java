@@ -16,8 +16,8 @@ import android.widget.SpinnerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchableSpinner extends Spinner implements View.OnTouchListener,
-        SearchableListDialog.SearchableItem {
+@SuppressWarnings({"unused", "WeakerAccess", "FieldCanBeLocal"})
+public class SearchableSpinner extends Spinner implements View.OnTouchListener, SearchableListDialog.SearchableItem {
 
     public static final int NO_ITEM_SELECTED = -1;
     private Context _context;
@@ -189,7 +189,7 @@ public class SearchableSpinner extends Spinner implements View.OnTouchListener,
         _searchableListDialog.setFilter(_filter);
 	}
 
-	public interface IFilter{
+    public interface IFilter{
 		boolean check(Object item, String text);
 	}
 }
