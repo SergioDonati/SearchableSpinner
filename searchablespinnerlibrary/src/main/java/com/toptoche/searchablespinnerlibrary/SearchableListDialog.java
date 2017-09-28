@@ -30,7 +30,7 @@ public class SearchableListDialog extends DialogFragment implements
     private static final String TAG = "SearchableListDialog";
     private static final String ITEMS = "items";
 
-    private ArrayAdapter listAdapter;
+    private ArrayAdapter _listAdapter;
 
     private ListView _listViewItems;
 
@@ -50,13 +50,13 @@ public class SearchableListDialog extends DialogFragment implements
 
 	private SearchableSpinner.IFilter _filter;
 
-    public SearchableListDialog() {
+    private List _dataList = new ArrayList();
 
+    public SearchableListDialog() {
     }
 
     public static SearchableListDialog newInstance(List items) {
-        SearchableListDialog multiSelectExpandableFragment = new
-                SearchableListDialog();
+        SearchableListDialog multiSelectExpandableFragment = new SearchableListDialog();
 
         Bundle args = new Bundle();
         args.putSerializable(ITEMS, (Serializable) items);
@@ -159,21 +159,26 @@ public class SearchableListDialog extends DialogFragment implements
         InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(_searchView.getWindowToken(), 0);
 
-        List items = (List) getArguments().getSerializable(ITEMS);
+        _dataList.clear();
+        try {
+            _dataList.addAll((List) getArguments().getSerializable(ITEMS));
+        }catch (Exception e){
+            Log.e(TAG, "", e);
+        }
 
         _listViewItems = (ListView) rootView.findViewById(R.id.listItems);
 
         //create the adapter by passing your ArrayList data
-        listAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, items);
+        _listAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, _dataList);
         //attach the adapter to the list
-        _listViewItems.setAdapter(listAdapter);
+        _listViewItems.setAdapter(_listAdapter);
 
         _listViewItems.setTextFilterEnabled(true);
 
         _listViewItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                _searchableItem.onSearchableItemClicked(listAdapter.getItem(position), position);
+                _searchableItem.onSearchableItemClicked(_listAdapter.getItem(position), position);
                 getDialog().dismiss();
             }
         });
@@ -203,28 +208,25 @@ public class SearchableListDialog extends DialogFragment implements
 //        listAdapter.filterData(s);
 		List items = (List) getArguments().getSerializable(ITEMS);
         if (items != null){
-            ArrayAdapter adapter = (ArrayAdapter) _listViewItems.getAdapter();
             if (TextUtils.isEmpty(s)) {
     //                _listViewItems.clearTextFilter();
-                adapter.clear();
-                adapter.addAll(items);
-                adapter.notifyDataSetChanged();
+                _dataList.clear();
+                _dataList.addAll(items);
+                _listAdapter.notifyDataSetChanged();
             } else {
                 if(_filter != null){
-                    List filtered = new ArrayList();
+                    _dataList.clear();
                     for (Object item: items) {
                         if(_filter.check(item, s)){
-                            filtered.add(item);
+                            _dataList.add(item);
                         }
                     }
-                    adapter.clear();
-                    adapter.addAll(filtered);
-                    adapter.notifyDataSetChanged();
+                    _listAdapter.notifyDataSetChanged();
                 }else{
-                    adapter.clear();
-                    adapter.addAll(items);
-                    adapter.notifyDataSetChanged();
-                    adapter.getFilter().filter(s);
+                    _dataList.clear();
+                    _dataList.addAll(items);
+                    _listAdapter.getFilter().filter(s);
+                    _listAdapter.notifyDataSetChanged();
                 }
             }
         }

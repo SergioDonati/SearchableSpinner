@@ -22,6 +22,8 @@ Searchable Spinner is a dialog spinner with the search feature which allows to s
     searchableSpinner.setPositiveButton("OK");
     
 # Changelog
+ * <b>1.3.7</b>
+     * Bug fixes.
  * <b>1.3.3 - 1.3.6</b>
      * Bug fixes.
  * <b>1.3.2</b>
